@@ -2,6 +2,16 @@ var express = require("express");
 var app = express();
 const animeData = require("./animeData");
 
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Route",
+    
+  );
+  next();
+});
+
 app.get("/", (_request, _response) => {
   _response.statusCode = 200;
   _response.send("This is DarthAnime!");
@@ -14,10 +24,14 @@ app.get("/anime", (_request, _response) => {
     return;
   }
 
-  try {
-    const userAgent = _request.headers["user-agent"]||"DarthAnime (I'm not stealing)";
+  console.log(route);
 
-    _response.send(animeData(route, userAgent));
+  try {
+    const userAgent =
+      _request.headers["user-agent"] || "DarthAnime (I'm not stealing)";
+var x = animeData(route, userAgent);
+
+    _response.send(x);
   } catch (error) {
     console.log(error);
     _response.statusCode = 500;
