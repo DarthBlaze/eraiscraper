@@ -38,7 +38,8 @@ var x = animeData(route, userAgent);
     _response.send(error);
   }
 });
-
-app.listen("80");
-console.log("This is DarthAnime! \n Listening on port 80");
+const port = process.env.PORT || 80;
+app.listen(port, () => {
+  app.log("This is DarthAnime! \nListening on port" + port);
+});
 exports = module.exports = app;
