@@ -3,50 +3,47 @@ var $ = require("cheerio");
 const URL = require("url");
 
 animeData = (_url, _userAgent) => {
-  var url = _url || "https://srv01.erai-ddl.info/";
-  var body = syncrequest("GET", url, {
-    headers: {
-      "user-agent": _userAgent
-    }
-  }).getBody("utf-8");
-  return buildStructure(body, url);
+    var url = _url || "https://srv01.erai-ddl.info/";
+    var body = syncrequest("GET", url, {
+        headers: {
+            "user-agent": _userAgent
+        }
+    }).getBody("utf-8");
+    return buildStructure(body, url);
 };
 
 buildStructure = (html, url) => {
-  const rawItems = $("#directory-listing > li", html);
-  const itemsAmount = rawItems.length;
-  const _url = URL.parse(url);
-  const _items = [];
-  console.log(_url);
-  for (let i = 0; i < itemsAmount; i++) {
-    if (rawItems[i].attribs["data-name"].trim() != "..") {
-      var isFolder =
-        $("a > div > span.file-name > i", rawItems[i])[0].attribs.class.indexOf(
-          "fa-folder"
-        ) > -1;
+    const rawItems = $("#directory-listing > li", html);
+    const itemsAmount = rawItems.length;
+    const _url = URL.parse(url);
+    const _items = [];
+    for (let i = 0; i < itemsAmount; i++) {
+        if (rawItems[i].attribs["data-name"].trim() != "..") {
+            var isFolder =
+                $("a > div > span.file-name > i", rawItems[i])[0].attribs.class.indexOf(
+                    "fa-folder"
+                ) > -1;
 
-      _items.push({
-        Name: rawItems[i].attribs["data-name"].replace(
-          /(\[(.*?)\])|(.mkv)/g,
-          ""
-        ),
-        Href: isFolder
-          ? ""
-          : "https://" + _url.hostname + "/" + rawItems[i].attribs["data-href"],
-        Size: $("a > div > span.file-size", rawItems[i])
-          .text()
-          .trim(),
-        Type: isFolder ? "folder" : "video",
-        Child: isFolder
-          ? "https://" + _url.hostname + "/" + rawItems[i].attribs["data-href"]
-          : "",
-        Resolution: rawItems[i].attribs["data-name"].match(
-          /(480p|720p|1080p)/g
-        )
-      });
+            _items.push({
+                Name: rawItems[i].attribs["data-name"].replace(
+                    /(\[(.*?)\])|(.mkv)/g,
+                    ""
+                ),
+                Href: isFolder ?
+                    "" : "https://" + _url.hostname + "/" + rawItems[i].attribs["data-href"],
+                Size: $("a > div > span.file-size", rawItems[i])
+                    .text()
+                    .trim(),
+                Type: isFolder ? "folder" : "video",
+                Child: isFolder ?
+                    "https://" + _url.hostname + "/" + rawItems[i].attribs["data-href"] : "",
+                Resolution: rawItems[i].attribs["data-name"].match(
+                    /(480p|720p|1080p)/g
+                )
+            });
+        }
     }
-  }
-  return _items;
+    return _items;
 };
 
 exports = module.exports = animeData;
