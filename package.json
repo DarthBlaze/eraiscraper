@@ -1,7 +1,10 @@
 {
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
+    "cloudflare-bypasser": "0.0.3",
+    "cloudscraper": "^1.5.1",
     "express": "^4.16.4",
+    "fake-useragent": "^1.0.1",
     "memory-cache": "^0.2.0",
     "puppeteer": "^1.10.0",
     "request": "^2.88.0",

@@ -1,5 +1,6 @@
 var express = require("express");
 var app = express();
+const fakeUa = require('fake-useragent');
 
 var cache = require("memory-cache"),
     cacheDuration = 30;
@@ -22,7 +23,7 @@ app.get("/", (_request, _response) => {
     _response.send("This is DarthAnime!");
 });
 
-app.get("/anime", (_request, _response) => {
+app.get("/anime", async(_request, _response) => {
     var route = _request.headers["route"];
     if (route === undefined) {
         _response.sendStatus(400);
@@ -40,7 +41,7 @@ app.get("/anime", (_request, _response) => {
             response = cacheResponse;
             console.log("cache is working");
         } else {
-            response = animeData(route, userAgent);
+            response = await animeData(route, fakeUa());
             cache.put(key, response, cacheDuration * 10000);
             console.log("this will be cached");
         }

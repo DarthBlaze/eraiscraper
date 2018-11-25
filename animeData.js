@@ -2,14 +2,29 @@ const syncrequest = require("sync-request");
 var $ = require("cheerio");
 const URL = require("url");
 
-animeData = (_url, _userAgent) => {
-    var url = _url || "https://srv01.erai-ddl.info/";
-    var body = syncrequest("GET", url, {
-        headers: {
-            "user-agent": _userAgent
-        }
-    }).getBody("utf-8");
-    return buildStructure(body, url);
+var cloudscraper = require('cloudscraper');
+
+
+animeData = async(_url, _userAgent) => {
+    return new Promise((resolve, reject) => {
+        console.time("x")
+        var url = _url || "https://srv01.erai-ddl.info/";
+
+        // var body = syncrequest("GET", url, {
+        //     headers: {
+        //         "user-agent": _userAgent
+        //     }
+        // }).getBody("utf-8");
+        // return buildStructure(body, url);
+        cloudscraper.get(url, function(error, response, body) {
+            if (error) {
+                reject(console.log(error));
+            } else {
+                console.log(body)
+                resolve(buildStructure(body, url));
+            }
+        });
+    });
 };
 
 buildStructure = (html, url) => {
