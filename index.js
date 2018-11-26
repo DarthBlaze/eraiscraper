@@ -3,7 +3,7 @@ var app = express();
 const fakeUa = require('fake-useragent');
 
 var cache = require("memory-cache"),
-    cacheDuration = 30;
+    cacheDuration = 300;
 
 
 const animeData = require("./animeData");
